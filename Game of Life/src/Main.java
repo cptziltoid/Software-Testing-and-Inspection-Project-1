@@ -10,7 +10,7 @@ public class Main {
 				+ "To create a new generation press N and confirm with ENTER\n"
 				+ "To quit the program press any other key and confirm with ENTER\n");
 		game.newGeneration();
-		String controller = input.nextLine();
+		String controller = "n";
 		
 		while(controller.equals("n")) {
 			controller = input.nextLine();
