@@ -14,17 +14,17 @@ public class GameOfLife {
 	
 	//Constructors
 	public GameOfLife(int rows, int columns) {
-		this.Rows = rows;
-		this.Columns = columns;
-		this.Generation = 0;
+		Rows = rows;
+		Columns = columns;
+		Generation = 0;
 		
 		Random rand = new Random();
 		OldTable = new int[rows][columns];
 		NewTable = new int[rows][columns];
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < columns; j++) {
-				this.NewTable[i][j] = rand.nextInt(2);
-				this.OldTable[i][j] = -1;
+				NewTable[i][j] = rand.nextInt(2);
+				OldTable[i][j] = -1;
 			}
 		}
 		
@@ -48,18 +48,18 @@ public class GameOfLife {
 	}
 	
 	private void printOldTable() {
-        for(int i = 0; i < this.Rows; i++) {
-        	for(int j = 0; j < this.Columns; j++) {
-        		System.out.print(this.OldTable[i][j] + " "); 
+        for(int i = 0; i < Rows; i++) {
+        	for(int j = 0; j < Columns; j++) {
+        		System.out.print(OldTable[i][j] + " "); 
         	}
         	System.out.print("\n");
         }   
 	}
 	
 	private void printNewTable() {
-        for(int i = 0; i < this.Rows; i++) {
-        	for(int j = 0; j < this.Columns; j++) {
-        		System.out.print(this.NewTable[i][j] + " "); 
+        for(int i = 0; i < Rows; i++) {
+        	for(int j = 0; j < Columns; j++) {
+        		System.out.print(NewTable[i][j] + " "); 
         	}
         	System.out.print("\n");
         }   
@@ -67,16 +67,16 @@ public class GameOfLife {
 	
 	//Prints the number of the current generation and the cells for immediate previous and current generation
 	public void printGeneration() {
-		System.out.print("Generation: " + this.Generation + "\n\nPrevious Table:\n");
-		this.printOldTable();
+		System.out.print("Generation: " + Generation + "\n\nPrevious Table:\n");
+		printOldTable();
 		System.out.print("\nCurrent Table:\n");
-		this.printNewTable();
+		printNewTable();
 		System.out.print("\n\n");
 	}
 	
 	//checks if a cell is alive
 	private boolean isAlive(int i, int j) {
-		if(this.OldTable[i][j] == 1)
+		if(OldTable[i][j] == 1)
 			return true;
 		else
 			return false;	
@@ -84,29 +84,45 @@ public class GameOfLife {
 	
 	//"kills" a cell; changes its value from 1 to 0
 	private void kill(int i, int j) {
-		this.NewTable[i][j] = 0;
+		NewTable[i][j] = 0;
 	}
 	
 	//"revives" a cell; changes its value from 0 to 1
 	private void revive(int i, int j) {
-		this.NewTable[i][j] = 1;
+		NewTable[i][j] = 1;
 	}
 	
 	//maintains a cell in its current state
 	private void live(int i, int j) {
-		this.NewTable[i][j] = this.OldTable[i][j];
+		NewTable[i][j] = OldTable[i][j];
 	}
 	
 	//returns how many neighbors a cell has
 	private int checkNeighbors(int i, int j) {
 		int neighbors = 0;
-		if(i != 0 && this.OldTable[i - 1][j] == 1)
+		//Up
+		if(i != 0 && OldTable[i - 1][j] == 1)
 			neighbors++;
-		if(i < (this.Rows - 1) && this.OldTable[i + 1][j] == 1)
+		//Down
+		if(i < (Rows - 1) && OldTable[i + 1][j] == 1)
 			neighbors++;
-		if(j != 0 && this.OldTable[i][j - 1] == 1)
+		//Left
+		if(j != 0 && OldTable[i][j - 1] == 1)
 			neighbors++;
-		if(j < (this.Columns - 1) && this.OldTable[i][j + 1] == 1)
+		//Right
+		if(j < (Columns - 1) && OldTable[i][j + 1] == 1)
+			neighbors++;
+		//Up and Left
+		if(i != 0 && j != 0 && OldTable[i - 1][j - 1] == 1)
+			neighbors++;
+		//Down and Right
+		if(i < (Rows - 1) && j < (Columns - 1) && OldTable[i + 1][j + 1] == 1)
+			neighbors++;
+		//Up and Right
+		if(i != 0 && j < (Columns - 1) && OldTable[i - 1][j + 1] == 1)
+			neighbors++;
+		//Down and Left
+		if(i < (Rows - 1) && j != 0 && OldTable[i + 1][j - 1] == 1)
 			neighbors++;
 		
 		return neighbors;
@@ -114,7 +130,7 @@ public class GameOfLife {
 	
 	//returns true if a cell is in a solitary state (has less than 2 neighbors)
 	private boolean checkSolitude(int i, int j) {
-		int neighbors = this.checkNeighbors(i, j);
+		int neighbors = checkNeighbors(i, j);
 		if(neighbors < 2)
 			return true;
 		else 
@@ -123,7 +139,7 @@ public class GameOfLife {
 	
 	//returns true if a cell suffers from overcrowding (has more than 3 neighbors)
 	private boolean checkOverpopulation(int i, int j) {
-		int neighbors = this.checkNeighbors(i, j);
+		int neighbors = checkNeighbors(i, j);
 		if(neighbors > 3)
 			return true;
 		else 
@@ -132,7 +148,7 @@ public class GameOfLife {
 	
 	//returns true if a cell can be "revived" (has 3 neighbors)
 	private boolean checkRevive(int i, int j) {
-		int neighbors = this.checkNeighbors(i, j);
+		int neighbors = checkNeighbors(i, j);
 		if(neighbors == 3)
 			return true;
 		else 
@@ -141,10 +157,10 @@ public class GameOfLife {
 	
 	//function that makes the necessary operations to evolve a new generation of cells
 	public void newGeneration() {
-		this.printGeneration();
+		printGeneration();
 		for(int i = 0; i < Rows; i++) {
 			for(int j = 0; j < Columns; j++) {
-				this.OldTable[i][j] = this.NewTable[i][j]; 
+				OldTable[i][j] = NewTable[i][j]; 
 			}
 		}
 		
@@ -162,7 +178,7 @@ public class GameOfLife {
 				}
 			}
 		}
-		this.Generation++;
+		Generation++;
 	}
 		
 }
