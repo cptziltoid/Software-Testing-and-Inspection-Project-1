@@ -156,14 +156,7 @@ public class GameOfLife {
 	}
 	
 	//function that makes the necessary operations to evolve a new generation of cells
-	public void newGeneration() {
-		printGeneration();
-		for(int i = 0; i < Rows; i++) {
-			for(int j = 0; j < Columns; j++) {
-				OldTable[i][j] = NewTable[i][j]; 
-			}
-		}
-		
+	private int[][] analyzeTable(int[][] oldTable){
 		for(int i = 0; i < Rows; i++) {
 			for(int j = 0; j < Columns; j++) {
 				if(isAlive(i, j)) {
@@ -178,6 +171,20 @@ public class GameOfLife {
 				}
 			}
 		}
+		
+		return NewTable;
+	}
+	
+	//function that prints a generation on the screen, organizes a new generation and updates its iteration
+	public void newGeneration() {
+		printGeneration();
+		for(int i = 0; i < Rows; i++) {
+			for(int j = 0; j < Columns; j++) {
+				OldTable[i][j] = NewTable[i][j]; 
+			}
+		}
+		
+		NewTable = analyzeTable(OldTable);
 		Generation++;
 	}
 		
