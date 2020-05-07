@@ -13,6 +13,7 @@ public class GameOfLife {
 	private int Generation;
 	
 	//Constructors
+	//constructor used for human interaction (uses random table to start the game)
 	public GameOfLife(int rows, int columns) {
 		Rows = rows;
 		Columns = columns;
@@ -26,8 +27,22 @@ public class GameOfLife {
 				NewTable[i][j] = rand.nextInt(2);
 				OldTable[i][j] = -1;
 			}
-		}
+		}	
+	}
+	
+	//constructor used for testing
+	public GameOfLife(int[][] matrix, int rows, int columns) {
+		Rows = rows;
+		Columns = columns;
 		
+		OldTable = new int[rows][columns];
+		NewTable = new int[rows][columns];
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < columns; j++) {
+				OldTable[i][j] = matrix[i][j];
+				NewTable[i][j] = 0;
+			}
+		}
 	}
 
 	//Methods
@@ -156,7 +171,7 @@ public class GameOfLife {
 	}
 	
 	//function that makes the necessary operations to evolve a new generation of cells
-	private int[][] analyzeTable(int[][] oldTable){
+	public int[][] analyzeTable(){
 		for(int i = 0; i < Rows; i++) {
 			for(int j = 0; j < Columns; j++) {
 				if(isAlive(i, j)) {
@@ -184,7 +199,7 @@ public class GameOfLife {
 			}
 		}
 		
-		NewTable = analyzeTable(OldTable);
+		NewTable = analyzeTable();
 		Generation++;
 	}
 		
